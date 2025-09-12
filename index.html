@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - College Attendance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-5">
+                                <h2 class="fw-bold text-primary">EduTrack</h2>
+                                <p class="text-muted">College Attendance & Activity System</p>
+                            </div>
+                            
+                            <h4 class="text-center mb-4">Select Your Role to Continue</h4>
+                            
+                            <div class="row mt-5">
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('student')">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <h4>Student</h4>
+                                        <p class="text-muted">View attendance & activities</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('teacher')">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        <h4>Teacher</h4>
+                                        <p class="text-muted">Manage classes & attendance</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('admin')">
+                                        <i class="fas fa-user-shield"></i>
+                                        <h4>Admin</h4>
+                                        <p class="text-muted">System analytics & reports</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-5">
+                                <p class="text-muted">By logging in, you agree to our Terms of Service and Privacy Policy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="main-container" id="mainApp">
+        <!-- Header -->
+        <div class="header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>EduTrack</h4>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-white">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="me-3 text-white">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="currentUserName">John Doe</span> (<span id="currentRole">Student</span>)
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 sidebar">
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="#" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="#" data-section="attendance">
+                            <i class="fas fa-calendar-check"></i> Attendance
+                        </a>
+                        <a class="nav-link" href="#" data-section="timetable">
+                            <i class="fas fa-calendar-alt"></i> Timetable
+                        </a>
+                        <a class="nav-link" href="#" data-section="activities">
+                            <i class="fas fa-tasks"></i> Activities
+                        </a>
+                        <a class="nav-link" href="#" data-section="reports">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                        <a class="nav-link teacher-only admin-only" href="#" data-section="qrgenerator">
+                            <i class="fas fa-qrcode"></i> QR Generator
+                        </a>
+                        <a class="nav-link teacher-only admin-only" href="#" data-section="management">
+                            <i class="fas fa-users-cog"></i> Management
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-9 col-lg-10 content">
+                    <!-- Dashboard Section -->
+                    <div class="content-section" id="dashboardSection">
+                        <h4 class="mb-4">Dashboard</h4>
+                        
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="attendancePercent">85%</div>
+                                                <div class="stats-text">Attendance Rate</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="classesToday">4</div>
+                                                <div class="stats-text">Classes Today</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-book fa-2x text-success"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="freeTime">2h</div>
+                                                <div class="stats-text">Free Time Today</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-clock fa-2x text-info"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="activitiesCompleted">12</div>
+                                                <div class="stats-text">Activities Completed</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-tasks fa-2x text-warning"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Today's Schedule</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="todaySchedule">
+                                            <!-- Schedule will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Suggested Activities</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="suggestedActivities">
+                                            <!-- Activities will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Attendance Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="attendanceChart" width="100%" height="200"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Quick Actions</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <button class="btn btn-primary w-100 mb-2" onclick="showSection('attendance')">
+                                            <i class="fas fa-qrcode me-2"></i>Mark Attendance
+                                        </button>
+                                        <button class="btn btn-success w-100 mb-2" onclick="showSection('activities')">
+                                            <i class="fas fa-tasks me-2"></i>View Activities
+                                        </button>
+                                        <button class="btn btn-info w-100 mb-2" onclick="showSection('timetable')">
+                                            <i class="fas fa-calendar me-2"></i>View Timetable
+                                        </button>
+                                        <button class="btn btn-warning w-100 teacher-only admin-only">
+                                            <i class="fas fa-plus me-2"></i>Create Assignment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Section -->
+                    <div class="content-section" id="attendanceSection" style="display: none;">
+                        <h4 class="mb-4">Attendance</h4>
+                        
+                        <ul class="nav nav-tabs" id="attendanceTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qr" type="button" role="tab" aria-controls="qr" aria-selected="true">QR Code</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="face-tab" data-bs-toggle="tab" data-bs-target="#face" type="button" role="tab" aria-controls="face" aria-selected="false">Face Recognition</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content mt-4" id="attendanceTabContent">
+                            <!-- QR Code Tab -->
+                            <div class="tab-pane fade show active" id="qr" role="tabpanel" aria-labelledby="qr-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Mark Your Attendance</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="qr-container mb-4">
+                                                    <h5>Scan QR Code</h5>
+                                                    <p class="text-muted">Point your camera at the QR code displayed in class</p>
+                                                    <div class="mb-3">
+                                                        <video id="qrScanner" width="100%" style="border-radius: 8px; display: none;"></video>
+                                                    </div>
+                                                    <button class="btn btn-primary" onclick="startQRScanner()">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="qr-container mb-4">
+                                                    <h5>Use Face Recognition</h5>
+                                                    <p class="text-muted">Point your camera at the Face displayed in class</p>
+                                                    <div class="mb-3">
+                                                        <video id="qrScanner" width="100%" style="border-radius: 8px; display: none;"></video>
+                                                    </div>
+                                                    <button class="btn btn-primary" onclick="switchToFaceRecognition()">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="qr-container">
+                                                    <h5>Current Class</h5>
+                                                    <p class="text-muted" id="currentClassInfo">No active class at the moment</p>
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>Attendance can only be marked during class time
+                                                    </div>
+                                                    <div id="attendanceStatus"></div>                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <h5>Attendance History</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Course</th>
+                                                            <th>Status</th>
+                                                            <th>Time</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="attendanceHistory">
+                                                        <!-- Will be populated by JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Face Recognition Tab -->
+                            <div class="tab-pane fade" id="face" role="tabpanel" aria-labelledby="face-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Mark Attendance with Face Recognition</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5>Face Recognition</h5>
+                                                <p class="text-muted">Position your face in the frame and ensure you're in the classroom</p>
+                                                
+                                                <div class="video-container">
+                                                    <video id="faceVideo" autoplay="true" playsinline></video>
+                                                    <canvas id="faceCanvas" style="display:none;"></canvas>
+                                                    <div class="scanning-animation"></div>
+                                                </div>
+                                                
+                                                <div class="d-flex justify-content-between mb-3">
+                                                    <button id="startCamera" class="btn btn-primary">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                    <button id="captureFace" class="btn btn-success" disabled>
+                                                        <i class="fas fa-check-circle me-2"></i>Mark Attendance
+                                                    </button>
+                                                </div>
+                                                
+                                                <div class="location-status bg-light">
+                                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                                    <span id="locationStatus">Checking your location...</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-header bg-transparent">
+                                                        <h6 class="mb-0">Current Class Information</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <strong>Course:</strong> CS101 - Introduction to Programming
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Time:</strong> 9:00 AM - 10:00 AM
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Teacher:</strong> Dr. VR Mishra
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Location:</strong> Room 301, CS Building
+                                                        </div>
+                                                        <div class="alert alert-info">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            You must be in the classroom to mark attendance
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="face-feedback alert alert-info" id="faceFeedback">
+                                                    <i class="fas fa-user me-2"></i>
+                                                    <span>Camera not started yet. Please allow camera access when prompted.</span>
+                                                </div>
+                                                
+                                                <!-- QR Code Button -->
+                                                <button class="btn btn-outline-primary face-attendance-btn" onclick="switchToQRCode()">
+                                                    <i class="fas fa-qrcode me-2"></i>Use QR Code Instead
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!-- Timetable Section -->
+                    <div class="content-section" id="timetableSection" style="display: none;">
+                        <h4 class="mb-4">Weekly Timetable</h4>
+                        
+                        <div class="timetable-container">
+                            <div class="timetable-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Class Schedule</h5>
+                                <div class="current-date">
+                                    <i class="fas fa-calendar-day me-2"></i>
+                                    <span id="currentDate">Monday, October 16, 2023</span>
+                                </div>
+                            </div>
+                            
+                            <div class="day-selector">
+                                <button class="day-btn active" data-day="monday">Monday</button>
+                                <button class="day-btn" data-day="tuesday">Tuesday</button>
+                                <button class="day-btn" data-day="wednesday">Wednesday</button>
+                                <button class="day-btn" data-day="thursday">Thursday</button>
+                                <button class="day-btn" data-day="friday">Friday</button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="timetable">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>9:00 - 10:00</th>
+                                            <th>10:00 - 11:00</th>
+                                            <th>11:00 - 12:00</th>
+                                            <th>12:00 - 1:00</th>
+                                            <th>1:00 - 2:00</th>
+                                            <th>2:00 - 3:00</th>
+                                            <th>3:00 - 4:00</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="time-slot">Monday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Tuesday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physical Education</div>
+                                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Wednesday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Thursday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Friday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physical Education</div>
+                                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More sections would be implemented here -->
+                    <div class="content-section" id="qrGeneratorSection" style="display: none;">
+                        <h4 class="mb-4">QR Code Generator</h4>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Generate QR for Class</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Select Course</label>
+                                            <select class="form-select" id="courseSelect">
+                                                <option value="">-- Select Course --</option>
+                                                <option value="CS101">CS101 - Introduction to Programming</option>
+                                                <option value="MATH202">MATH202 - Calculus II</option>
+                                                <option value="PHYS103">PHYS103 - Physics for Engineers</option>
+                                                <option value="ENG151">ENG151 - English Composition</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Duration (minutes)</label>
+                                            <input type="number" class="form-control" id="qrDuration" value="15" min="5" max="60">
+                                        </div>
+                                        <button class="btn btn-primary" onclick="generateQRCode()">
+                                            <i class="fas fa-qrcode me-2"></i>Generate QR Code
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="qr-container">
+                                            <h5>QR Code</h5>
+                                            <div id="qrcode"></div>
+                                            <p class="mt-3" id="qrInfo">No QR code generated yet</p>
+                                            <div class="alert alert-warning mt-3">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                This QR code will expire in <span id="qrTimeRemaining">0:00</span> minutes
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

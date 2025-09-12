@@ -1,0 +1,246 @@
+:root {
+    --primary: #4e73df;
+    --secondary: #6f42c1;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #5a5c69;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fc;
+    color: #333;
+    line-height: 1.6;
+}
+
+.login-container {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-container {
+    display: none;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.sidebar {
+    background: white;
+    min-height: calc(100vh - 73px);
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    padding: 0;
+}
+
+.sidebar .nav-link {
+    color: var(--dark);
+    padding: 1rem;
+    border-left: 4px solid transparent;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--light);
+    border-left: 4px solid var(--primary);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--light);
+    border-left: 4px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.sidebar .nav-link i {
+    margin-right: 0.5rem;
+    width: 20px;
+    text-align: center;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.card-header {
+    background: linear-gradient(180deg, var(--light) 0%, #e3e6f0 100%);
+    border-bottom: 1px solid #e3e6f0;
+    font-weight: 600;
+    padding: 1rem 1.35rem;
+}
+
+.dashboard-card {
+    border-left: 4px solid var(--primary);
+    transition: transform 0.3s;
+    height: 100%;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.attendance-badge {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+.timetable-day {
+    border-radius: 8px;
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+}
+
+.timetable-slot {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    background: var(--light);
+}
+
+.timetable-slot.free {
+    background: #e8f5e9;
+    border-left: 4px solid var(--success);
+}
+
+.timetable-slot.class {
+    background: #e3f2fd;
+    border-left: 4px solid var(--primary);
+}
+
+.activity-card {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.activity-card:hover {
+    transform: translateY(-3px);
+}
+
+.qr-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+#qrcode {
+    margin: 1rem auto;
+}
+
+.role-btn {
+    border: 2px solid transparent;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+    margin-bottom: 1rem;
+}
+
+.role-btn:hover {
+    transform: translateY(-5px);
+    border: 2px solid var(--primary);
+}
+
+.role-btn h4 {
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+.role-btn i {
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+.stats-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stats-text {
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* Face Recognition Styles */
+.video-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#faceVideo, #faceCanvas {
+    width: 100%;
+    border-radius: 8px;
+    background-color: #f8f9fc;
+}
+
+.face-feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.scanning-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary);
+    animation: scan 2s infinite;
+}
+
+@keyframes scan {
+    0% { top: 0; }
+    50% { top: calc(100% - 4px); }
+    100% { top: 0; }
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.location-status {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.face-attendance-btn {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        min-height: auto;
+    }
+}

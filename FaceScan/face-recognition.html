@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Face Recognition Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="face-recognition.css">
+</head>
+<body>
+    <!-- Location Permission Modal -->
+    <div class="location-modal" id="locationModal">
+        <div class="location-modal-content">
+            <h4 class="mb-3"><i class="fas fa-map-marker-alt text-primary me-2"></i>Location Access Required</h4>
+            <p>To verify you're in the classroom, we need access to your device's location.</p>
+            
+            <div class="permission-checkbox">
+                <input type="checkbox" id="locationPermission">
+                <label for="locationPermission">Enable Location Access</label>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary me-2" id="cancelLocation">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmLocation">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="main-container" id="mainApp">
+        <!-- Header -->
+        <div class="header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>EduTrack Face Recognition</h4>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="currentUserName">Akhilesh</span> (<span id="currentRole">Student</span>)
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#" onclick="showEnrollment()"><i class="fas fa-user-plus me-2"></i>Enroll Face</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-md-12 content">
+                    <!-- Face Recognition Attendance Section -->
+                    <div class="content-section" id="attendanceSection">
+                        <h4 class="mb-4">Face Recognition Attendance</h4>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Mark Attendance with Face Recognition</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Face Recognition</h5>
+                                        <p class="text-muted">Position your face in the frame and ensure you're in the classroom</p>
+                                        
+                                        <div class="video-container">
+                                            <video id="faceVideo" autoplay="true" playsinline></video>
+                                            <canvas id="faceCanvas" style="display:none;"></canvas>
+                                            <div class="scanning-animation"></div>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <button id="startCamera" class="btn btn-primary">
+                                                <i class="fas fa-camera me-2"></i>Start Camera
+                                            </button>
+                                            <button id="captureFace" class="btn btn-success" disabled>
+                                                <i class="fas fa-check-circle me-2"></i>Mark Attendance
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="location-status bg-light">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            <span id="locationStatus">Location access not granted yet</span>
+                                        </div>
+                                        
+                                        <!-- Real-time Location Display -->
+                                        <div class="location-display" id="locationDisplay" style="display: none;">
+                                            <h6><i class="fas fa-location-dot me-2"></i>Your Current Location</h6>
+                                            <div class="coordinates">
+                                                <div>Latitude: <span id="currentLatitude">--</span></div>
+                                                <div>Longitude: <span id="currentLongitude">--</span></div>
+                                                <div>Accuracy: <span id="locationAccuracy">--</span> meters</div>
+                                                <div>Last Updated: <span id="locationTimestamp">--</span></div>
+                                            </div>
+                                            <div class="location-map">
+                                                <i class="fas fa-map me-2"></i>Map visualization would appear here
+                                            </div>
+                                            <div class="mt-2">
+                                                <button id="refreshLocation" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-refresh me-1"></i>Refresh Location
+                                                </button>
+                                                <button id="stopLocation" class="btn btn-sm btn-outline-danger ms-2">
+                                                    <i class="fas fa-stop me-1"></i>Stop Tracking
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header bg-transparent">
+                                                <h6 class="mb-0">Current Class Information</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <strong>Course:</strong> CS101 - Introduction to Programming
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong>Time:</strong> 9:00 AM - 10:00 AM
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong>Teacher:</strong> Dr. VR Mishra
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong>Location:</strong> Room 301, CS Building
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong>Class Coordinates:</strong> 
+                                                    <div class="small">28.6129° N, 77.2295° E</div>
+                                                </div>
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    You must be in the classroom to mark attendance
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="face-feedback alert alert-info" id="faceFeedback">
+                                            <i class="fas fa-user me-2"></i>
+                                            <span>Camera not started yet. Please allow camera access when prompted.</span>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <h6>Your Enrollment Status</h6>
+                                            <div id="enrollmentStatus" class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                You need to enroll your face before using face recognition
+                                            </div>
+                                            <button class="btn btn-outline-primary w-100" onclick="showEnrollment()">
+                                                <i class="fas fa-user-plus me-2"></i>Enroll Your Face
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h5>Attendance History</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Course</th>
+                                                    <th>Status</th>
+                                                    <th>Time</th>
+                                                    <th>Method</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="attendanceHistory">
+                                                <!-- Will be populated by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Face Enrollment Section -->
+                    <div class="content-section enrollment-section" id="enrollmentSection">
+                        <h4 class="mb-4">Enroll Your Face</h4>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Face Enrollment Process</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="video-container">
+                                            <video id="enrollmentVideo" autoplay="true" playsinline></video>
+                                            <canvas id="enrollmentCanvas" style="display:none;"></canvas>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between mb-3 mt-3">
+                                            <button id="startEnrollmentCamera" class="btn btn-primary">
+                                                <i class="fas fa-camera me-2"></i>Start Camera
+                                            </button>
+                                            <button id="captureEnrollment" class="btn btn-success" disabled>
+                                                <i class="fas fa-camera me-2"></i>Capture Sample
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Capture 3-5 samples of your face from different angles for better recognition
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <h5>Captured Samples</h5>
+                                        <div class="face-gallery" id="faceSamples">
+                                            <!-- Face samples will be added here -->
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <button id="completeEnrollment" class="btn btn-success w-100" disabled>
+                                                <i class="fas fa-check-circle me-2"></i>Complete Enrollment
+                                            </button>
+                                            <button class="btn btn-outline-secondary w-100 mt-2" onclick="hideEnrollment()">
+                                                <i class="fas fa-times me-2"></i>Cancel
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                Make sure you're in a well-lit area and your face is clearly visible
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="face-recognition.js"></script>
+</body>
+</html>
