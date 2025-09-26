@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - College Attendance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #6f42c1;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .login-container {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: calc(100vh - 73px);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 0;
+        }
+
+        .sidebar .nav-link {
+            color: var(--dark);
+            padding: 1rem;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: var(--light);
+            border-left: 4px solid var(--primary);
+        }
+
+        .sidebar .nav-link.active {
+            background-color: var(--light);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 1.5rem;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+
+        .card-header {
+            background: linear-gradient(180deg, var(--light) 0%, #e3e6f0 100%);
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 600;
+            padding: 1rem 1.35rem;
+        }
+
+        .dashboard-card {
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stats-text {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .role-btn {
+            border: 2px solid transparent;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .role-btn:hover {
+            transform: translateY(-5px);
+            border: 2px solid var(--primary);
+        }
+
+        .role-btn h4 {
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .role-btn i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        /* Reports Section Styles */
+        .filter-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        }
+
+        .student-card {
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .attendance-progress {
+            height: 8px;
+        }
+
+        .report-table th {
+            background-color: #f8f9fc;
+            font-weight: 600;
+        }
+
+        .badge-attendance {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.65rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5fc8;
+            border-color: #3a5cfa;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        /* Timetable Styles */
+        .timetable-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .timetable-header {
+            background: linear-gradient(180deg, var(--light) 0%, #e3e6f0 100%);
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 600;
+            padding: 1rem 1.35rem;
+        }
+        
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            background-color: white;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .day-btn {
+            flex: 1;
+            min-width: 120px;
+            border: none;
+            padding: 0.75rem;
+            margin: 0 0.25rem;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .day-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .subject-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0.75rem;
+            box-shadow: 0 0.15rem 0.5rem rgba(58, 59, 69, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .subject-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subject-details {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .free-period {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .substituted {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .substitution-badge {
+            background-color: var(--warning);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        
+        .alert-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 350px;
+        }
+        
+        .current-time-indicator {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+            
+            .timetable th, .timetable td {
+                padding: 0.5rem;
+            }
+            
+            .subject-card {
+                padding: 0.5rem;
+            }
+            
+            .subject-name {
+                font-size: 0.9rem;
+            }
+            
+            .subject-details {
+                font-size: 0.75rem;
+            }
+            
+            .alert-container {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-5">
+                                <h2 class="fw-bold text-primary">EduTrack</h2>
+                                <p class="text-muted">College Attendance & Activity System</p>
+                            </div>
+                            
+                            <h4 class="text-center mb-4">Select Your Role to Continue</h4>
+                            
+                            <div class="row mt-5">
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('student')">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <h4>Student</h4>
+                                        <p class="text-muted">View attendance & activities</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('teacher')">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        <h4>Teacher</h4>
+                                        <p class="text-muted">Manage classes & attendance</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="role-btn" onclick="login('admin')">
+                                        <i class="fas fa-user-shield"></i>
+                                        <h4>Admin</h4>
+                                        <p class="text-muted">System analytics & reports</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-5">
+                                <p class="text-muted">By logging in, you agree to our Terms of Service and Privacy Policy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="main-container" id="mainApp">
+        <!-- Header -->
+        <div class="header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i>EduTrack</h4>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 text-white">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="me-3 text-white">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="currentUserName">John Doe</span> (<span id="currentRole">Student</span>)
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 sidebar">
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="#" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="#" data-section="attendance">
+                            <i class="fas fa-calendar-check"></i> Attendance
+                        </a>
+                        <a class="nav-link" href="#" data-section="timetable">
+                            <i class="fas fa-calendar-alt"></i> Timetable
+                        </a>
+                        <a class="nav-link" href="#" data-section="activities">
+                            <i class="fas fa-tasks"></i> Activities
+                        </a>
+                        <a class="nav-link" href="#" data-section="reports">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                        <a class="nav-link teacher-only admin-only" href="#" data-section="qrgenerator">
+                            <i class="fas fa-qrcode"></i> QR Generator
+                        </a>
+                        <a class="nav-link teacher-only admin-only" href="#" data-section="management">
+                            <i class="fas fa-users-cog"></i> Management
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-9 col-lg-10 content">
+                    <!-- Dashboard Section -->
+                    <div class="content-section" id="dashboardSection">
+                        <h4 class="mb-4">Dashboard</h4>
+                        
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="attendancePercent">85%</div>
+                                                <div class="stats-text">Attendance Rate</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="classesToday">4</div>
+                                                <div class="stats-text">Classes Today</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-book fa-2x text-success"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="freeTime">2h</div>
+                                                <div class="stats-text">Free Time Today</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-clock fa-2x text-info"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card dashboard-card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="activitiesCompleted">12</div>
+                                                <div class="stats-text">Activities Completed</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-tasks fa-2x text-warning"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Today's Schedule</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="todaySchedule">
+                                            <!-- Schedule will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Suggested Activities</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="suggestedActivities">
+                                            <!-- Activities will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Attendance Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="attendanceChart" width="100%" height="200"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Quick Actions</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <button class="btn btn-primary w-100 mb-2" onclick="showSection('attendance')">
+                                            <i class="fas fa-qrcode me-2"></i>Mark Attendance
+                                        </button>
+                                        <button class="btn btn-success w-100 mb-2" onclick="showSection('activities')">
+                                            <i class="fas fa-tasks me-2"></i>View Activities
+                                        </button>
+                                        <button class="btn btn-info w-100 mb-2" onclick="showSection('timetable')">
+                                            <i class="fas fa-calendar me-2"></i>View Timetable
+                                        </button>
+                                        <button class="btn btn-warning w-100 teacher-only admin-only">
+                                            <i class="fas fa-plus me-2"></i>Create Assignment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Section -->
+                    <div class="content-section" id="attendanceSection" style="display: none;">
+                        <h4 class="mb-4">Attendance</h4>
+                        
+                        <ul class="nav nav-tabs" id="attendanceTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qr" type="button" role="tab" aria-controls="qr" aria-selected="true">QR Code</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="face-tab" data-bs-toggle="tab" data-bs-target="#face" type="button" role="tab" aria-controls="face" aria-selected="false">Face Recognition</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content mt-4" id="attendanceTabContent">
+                            <!-- QR Code Tab -->
+                            <div class="tab-pane fade show active" id="qr" role="tabpanel" aria-labelledby="qr-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Mark Your Attendance</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="qr-container mb-4">
+                                                    <h5>Scan QR Code</h5>
+                                                    <p class="text-muted">Point your camera at the QR code displayed in class</p>
+                                                    <div class="mb-3">
+                                                        <video id="qrScanner" width="100%" style="border-radius: 8px; display: none;"></video>
+                                                    </div>
+                                                    <button class="btn btn-primary" onclick="startQRScanner()">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="qr-container mb-4">
+                                                    <h5>Use Face Recognition</h5>
+                                                    <p class="text-muted">Point your camera at the Face displayed in class</p>
+                                                    <div class="mb-3">
+                                                        <video id="qrScanner" width="100%" style="border-radius: 8px; display: none;"></video>
+                                                    </div>
+                                                    <button class="btn btn-primary" onclick="switchToFaceRecognition()">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="qr-container">
+                                                    <h5>Current Class</h5>
+                                                    <p class="text-muted" id="currentClassInfo">No active class at the moment</p>
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>Attendance can only be marked during class time
+                                                    </div>
+                                                    <div id="attendanceStatus"></div>                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <h5>Attendance History</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Course</th>
+                                                            <th>Status</th>
+                                                            <th>Time</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="attendanceHistory">
+                                                        <!-- Will be populated by JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Face Recognition Tab -->
+                            <div class="tab-pane fade" id="face" role="tabpanel" aria-labelledby="face-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Mark Attendance with Face Recognition</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5>Face Recognition</h5>
+                                                <p class="text-muted">Position your face in the frame and ensure you're in the classroom</p>
+                                                
+                                                <div class="video-container">
+                                                    <video id="faceVideo" autoplay="true" playsinline></video>
+                                                    <canvas id="faceCanvas" style="display:none;"></canvas>
+                                                    <div class="scanning-animation"></div>
+                                                </div>
+                                                
+                                                <div class="d-flex justify-content-between mb-3">
+                                                    <button id="startCamera" class="btn btn-primary">
+                                                        <i class="fas fa-camera me-2"></i>Start Camera
+                                                    </button>
+                                                    <button id="captureFace" class="btn btn-success" disabled>
+                                                        <i class="fas fa-check-circle me-2"></i>Mark Attendance
+                                                    </button>
+                                                </div>
+                                                
+                                                <div class="location-status bg-light">
+                                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                                    <span id="locationStatus">Checking your location...</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-header bg-transparent">
+                                                        <h6 class="mb-0">Current Class Information</h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <strong>Course:</strong> CS101 - Introduction to Programming
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Time:</strong> 9:00 AM - 10:00 AM
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Teacher:</strong> Dr. VR Mishra
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Location:</strong> Room 301, CS Building
+                                                        </div>
+                                                        <div class="alert alert-info">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            You must be in the classroom to mark attendance
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="face-feedback alert alert-info" id="faceFeedback">
+                                                    <i class="fas fa-user me-2"></i>
+                                                    <span>Camera not started yet. Please allow camera access when prompted.</span>
+                                                </div>
+                                                
+                                                <!-- QR Code Button -->
+                                                <button class="btn btn-outline-primary face-attendance-btn" onclick="switchToQRCode()">
+                                                    <i class="fas fa-qrcode me-2"></i>Use QR Code Instead
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timetable Section -->
+                    <div class="alert-container" id="alertContainer"></div>
+
+                    <div class="content-section" id="timetableSection" style="display: none;">
+                        <h4 class="mb-4">Weekly Timetable</h4>
+                        
+                        <div class="timetable-container">
+                            <div class="timetable-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Class Schedule</h5>
+                                <div class="current-date">
+                                    <i class="fas fa-calendar-day me-2"></i>
+                                    <span id="currentDate">Monday, October 16, 2023</span>
+                                </div>
+                            </div>
+                            
+                            <div class="day-selector">
+                                <button class="day-btn active" data-day="monday">Monday</button>
+                                <button class="day-btn" data-day="tuesday">Tuesday</button>
+                                <button class="day-btn" data-day="wednesday">Wednesday</button>
+                                <button class="day-btn" data-day="thursday">Thursday</button>
+                                <button class="day-btn" data-day="friday">Friday</button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="timetable">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>9:00 - 10:00</th>
+                                            <th>10:00 - 11:00</th>
+                                            <th>11:00 - 12:00</th>
+                                            <th>12:00 - 1:00</th>
+                                            <th>1:00 - 2:00</th>
+                                            <th>2:00 - 3:00</th>
+                                            <th>3:00 - 4:00</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="time-slot">Monday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Tuesday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physical Education</div>
+                                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Wednesday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Thursday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card free-period">
+                                                    <div class="subject-name">Free Period</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">Friday</td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">English</div>
+                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Chemistry</div>
+                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Mathematics</div>
+                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physics</div>
+                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                                </div>
+                                            </td>
+                                            <td class="time-slot">Lunch</td>
+                                            <td>
+                                                <div class="subject-card substituted">
+                                                    <div class="subject-name">Computer Science</div>
+                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                                    <span class="substitution-badge">Substituted</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="subject-card">
+                                                    <div class="subject-name">Physical Education</div>
+                                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activities Section -->
+                    <div class="content-section" id="activitiesSection" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h4 class="mb-0">Student Activities Dashboard</h4>
+                                <p class="text-muted mb-0">Manage your academic activities and stay on top of deadlines</p>
+                            </div>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newActivityModal">
+                                <i class="fas fa-plus me-2"></i>New Activity
+                            </button>
+                        </div>
+                        
+                        <!-- Stats Cards -->
+                        <div class="row mb-4">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card stat-card">
+                                    <div class="card-body text-center p-3">
+                                        <div class="stats-number display-6 fw-bold">5</div>
+                                        <div class="stats-text">Total Activities</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Controls and Content -->
+                        <div class="row">
+                            <!-- Left Column - Activities List -->
+                            <div class="col-lg-8">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="search-box mb-4">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" class="form-control" placeholder="Search activities...">
+                                        </div>
+                                        
+                                        <!-- Activity Cards -->
+                                        <div class="activity-list">
+                                            <!-- Physics Lab Report -->
+                                            <div class="activity-card mb-3">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Physics Lab Report</h6>
+                                                        <p class="text-muted small mb-1">PHYS103 - Physics for Engineers</p>
+                                                        <p class="small mb-2">Complete lab report on pendulum motion analysis with data collection and error analysis.</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-success me-2">Progress: 100%</span>
+                                                            <span class="text-danger small">603 days overdue • 1/22/2024</span>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Programming Assignment 3 -->
+                                            <div class="activity-card mb-3">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <h6 class="mb-1">Programming Assignment 3</h6>
+                                                            <span class="badge bg-danger ms-2">High Priority</span>
+                                                        </div>
+                                                        <p class="text-muted small mb-1">CS101 - Introduction to Programming</p>
+                                                        <p class="small mb-2">Implement a sorting algorithm using Python. The assignment requires implementing quicksort and mergesort algorithms with performance analysis.</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-success me-2">Progress: 100%</span>
+                                                            <span class="text-danger small">600 days overdue • 1/25/2024</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <button class="btn btn-sm btn-outline-primary mb-1">Submit</button>
+                                                        <button class="btn btn-sm btn-outline-secondary">View</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Chemistry Quiz 3 -->
+                                            <div class="activity-card mb-3">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Chemistry Quiz 3</h6>
+                                                        <p class="text-muted small mb-1">CHEM121 - General Chemistry</p>
+                                                        <p class="small mb-2">Online quiz covering chemical bonding, molecular geometry, and intermolecular forces.</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-success me-2">Progress: 100%</span>
+                                                            <span class="text-danger small">599 days overdue • 1/26/2024</span>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                    </div>
+                                            </div>
+                                            
+                                            <!-- Essay: Climate Change -->
+                                            <div class="activity-card mb-3">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Essay: Climate Change</h6>
+                                                        <p class="text-muted small mb-1">ENG151 - English Composition</p>
+                                                        <p class="small mb-2">Write a 1500-word argumentative essay on climate change impacts and solutions.</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-success me-2">Progress: 100%</span>
+                                                            <span class="text-danger small">596 days overdue • 1/30/2024</span>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-primary">Submit</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Calculus Problem Set 5 -->
+                                            <div class="activity-card mb-3">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Calculus Problem Set 5</h6>
+                                                        <p class="text-muted small mb-1">MATH202 - Calculus II</p>
+                                                        <p class="small mb-2">Solve integration problems using various techniques including integration by parts and substitution.</p>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="badge bg-success me-2">Progress: 100%</span>
+                                                            <span class="text-danger small">597 days overdue • 1/28/2024</span>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-primary">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column - Stats and Actions -->
+                            <div class="col-lg-4">
+                                <!-- Status Filter -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">All Status</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="badge bg-secondary">All</span>
+                                            <span class="badge bg-primary">Pending</span>
+                                            <span class="badge bg-success">Submitted</span>
+                                            <span class="badge bg-info">Graded</span>
+                                            <span class="badge bg-danger">Overdue</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Due Date Filter -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">Due Date</h6>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="overdueCheck" checked>
+                                            <label class="form-check-label" for="overdueCheck">
+                                                Overdue (3)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="thisWeekCheck">
+                                            <label class="form-check-label" for="thisWeekCheck">
+                                                This Week (0)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="nextWeekCheck">
+                                            <label class="form-check-label" for="nextWeekCheck">
+                                                Next Week (0)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="futureCheck">
+                                            <label class="form-check-label" for="futureCheck">
+                                                Future (0)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Upcoming Deadlines -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">Upcoming Deadlines</h6>
+                                        <p class="text-muted mb-0">No upcoming deadlines</p>
+                                        <p class="text-success small">You're all caught up!</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Progress Overview -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">Progress Overview</h6>
+                                        <div class="text-center mb-3">
+                                            <div class="display-6 fw-bold">40%</div>
+                                            <div class="text-muted small">Completion Rate</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Pending</span>
+                                            <span>Submitted</span>
+                                            <span>Graded</span>
+                                            <span>Overdue</span>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 20%"></div>
+                                            <div class="progress-bar bg-info" style="width: 30%"></div>
+                                            <div class="progress-bar bg-success" style="width: 40%"></div>
+                                            <div class="progress-bar bg-danger" style="width: 10%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="text-center">
+                                                <div class="fw-bold">2</div>
+                                                <div class="text-muted small">Completed</div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="fw-bold">3</div>
+                                                <div class="text-muted small">Remaining</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">Quick Actions</h6>
+                                        <button class="btn btn-outline-primary w-100 mb-2">
+                                            <i class="fas fa-plus me-2"></i>Add New Activity
+                                        </button>
+                                        <button class="btn btn-outline-success w-100 mb-2">
+                                            <i class="fas fa-check-double me-2"></i>Mark All as Complete
+                                        </button>
+                                        <button class="btn btn-outline-info w-100">
+                                            <i class="fas fa-calendar me-2"></i>View Schedule
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports Section -->
+                    <div class="content-section" id="reportsSection" style="display: none;">
+                        <h4 class="mb-4">Student Reports & Analytics</h4>
+                        
+                        <!-- Filter Section -->
+                        <div class="filter-section">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Course</label>
+                                        <select class="form-select" id="courseFilter">
+                                            <option value="all">All Courses</option>
+                                            <option value="CS101">CS101 - Programming</option>
+                                            <option value="MATH202">MATH202 - Calculus</option>
+                                            <option value="PHYS103">PHYS103 - Physics</option>
+                                            <option value="ENG151">ENG151 - English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Time Period</label>
+                                        <select class="form-select" id="timeFilter">
+                                            <option value="7">Last 7 Days</option>
+                                            <option value="30" selected>Last 30 Days</option>
+                                            <option value="90">Last 90 Days</option>
+                                            <option value="semester">This Semester</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Attendance Threshold</label>
+                                        <input type="range" class="form-range" min="0" max="100" step="5" id="attendanceThreshold" value="75">
+                                        <div class="form-text" id="thresholdValue">Show students with attendance ≥ 75%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" id="applyFilters">
+                                        <i class="fas fa-filter me-2"></i>Apply Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Summary Cards -->
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="totalStudents">142</div>
+                                                <div class="stats-text">Total Students</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-users fa-2x text-primary"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="avgAttendance">87%</div>
+                                                <div class="stats-text">Average Attendance</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-calendar-check fa-2x text-success"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="lowAttendance">12</div>
+                                                <div class="stats-text">Low Attendance</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-8">
+                                                <div class="stats-number" id="activitiesCompleted">84%</div>
+                                                <div class="stats-text">Activities Completed</div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <i class="fas fa-tasks fa-2x text-info"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Charts -->
+                        <div class="row mb-4">
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Attendance Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="attendanceDistChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Performance by Course</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="performanceChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Student Reports Table -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Student Reports</h5>
+                                <div>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Search students..." id="searchStudents">
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover report-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Student ID</th>
+                                                <th>Name</th>
+                                                <th>Course</th>
+                                                <th>Attendance</th>
+                                                <th>Activities Completed</th>
+                                                <th>Average Grade</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="studentsTableBody">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <nav aria-label="Student reports pagination">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Current user role
+        let currentRole = '';
+
+        // Sample data
+        const sampleTimetable = [
+            { day: 'Monday', slots: [
+                { time: '9:00-10:00', subject: 'CS101', type: 'class', room: 'Room 301' },
+                { time: '10:00-11:00', subject: 'MATH202', type: 'class', room: 'Room 205' },
+                { time: '11:00-12:00', subject: 'Free Time', type: 'free', room: '' },
+                { time: '12:00-1:00', subject: 'PHYS103', type: 'class', room: 'Lab 102' }
+            ]},
+            { day: 'Tuesday', slots: [
+                { time: '9:00-10:00', subject: 'ENG151', type: 'class', room: 'Room 110' },
+                { time: '10:00-11:00', subject: 'CS101', type: 'class', room: 'Room 301' },
+                { time: '11:00-12:00', subject: 'MATH202', type: 'class', room: 'Room 205' },
+                { time: '12:00-1:00', subject: 'Free Time', type: 'free', room: '' }
+            ]}
+        ];
+
+        const sampleActivities = [
+            { id: 1, title: 'Complete Python Assignment', type: 'assignment', subject: 'CS101', duration: '45 min', priority: 'high' },
+            { id: 2, title: 'Solve LeetCode Array Problems', type: 'leetcode', subject: 'CS101', duration: '30 min', priority: 'medium' },
+            { id: 3, title: 'Study for Physics Quiz', type: 'study', subject: 'PHYS103', duration: '60 min', priority: 'high' },
+            { id: 4, title: 'Read Chapter 5 of Calculus', type: 'reading', subject: 'MATH202', duration: '40 min', priority: 'medium' }
+        ];
+
+        const attendanceData = [
+            { date: '2023-10-01', course: 'CS101', status: 'Present', time: '9:05 AM' },
+            { date: '2023-10-01', course: 'MATH202', status: 'Present', time: '10:10 AM' },
+            { date: '2023-10-01', course: 'PHYS103', status: 'Late', time: '12:15 PM' },
+            { date: '2023-09-28', course: 'ENG151', status: 'Present', time: '9:02 AM' },
+            { date: '2023-09-28', course: 'CS101', status: 'Absent', time: '--' }
+        ];
+
+        // Dummy student data for reports
+        const studentsData = [
+            { id: 'S001', name: 'Akhilesh Kumar', course: 'CS101', attendance: 92, activities: 12, grade: 85, status: 'Good' },
+            { id: 'S002', name: 'Priya Sharma', course: 'CS101', attendance: 88, activities: 10, grade: 78, status: 'Good' },
+            { id: 'S003', name: 'Rahul Verma', course: 'MATH202', attendance: 65, activities: 8, grade: 72, status: 'Warning' },
+            { id: 'S004', name: 'Sneha Patel', course: 'PHYS103', attendance: 95, activities: 11, grade: 88, status: 'Excellent' },
+            { id: 'S005', name: 'Vikram Singh', course: 'ENG151', attendance: 72, activities: 9, grade: 68, status: 'Needs Improvement' },
+            { id: 'S006', name: 'Anjali Gupta', course: 'CS101', attendance: 90, activities: 12, grade: 82, status: 'Good' },
+            { id: 'S007', name: 'Mohit Agarwal', course: 'MATH202', attendance: 58, activities: 7, grade: 65, status: 'At Risk' },
+            { id: 'S008', name: 'Neha Reddy', course: 'PHYS103', attendance: 96, activities: 12, grade: 91, status: 'Excellent' },
+            { id: 'S009', name: 'Karan Malhotra', course: 'ENG151', attendance: 84, activities: 10, grade: 76, status: 'Good' },
+            { id: 'S010', name: 'Divya Joshi', course: 'CS101', attendance: 79, activities: 9, grade: 74, status: 'Satisfactory' }
+        ];
+
+        // Login function
+        function login(role) {
+            currentRole = role;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('currentRole').textContent = capitalizeFirstLetter(role);
+            
+            // Set user name based on role
+            const names = {
+                student: 'Akhilesh',
+                teacher: 'VR Mishra',
+                admin: 'Admin User'
+            };
+            document.getElementById('currentUserName').textContent = names[role];
+            
+            // Show/hide elements based on role
+            document.querySelectorAll('.teacher-only, .admin-only').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            if (role === 'teacher' || role === 'admin') {
+                document.querySelectorAll('.teacher-only').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+            
+            if (role === 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+            
+            // Initialize dashboard
+            initializeDashboard();
+        }
+
+        // Logout function
+        function logout() {
+            currentRole = '';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+        }
+
+        // Capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // Show section
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.nav-link[data-section="${section}"]`).classList.add('active');
+            
+            // Initialize specific sections if needed
+            if (section === 'reports') {
+                initReportsSection();
+            }
+            
+            if (section === 'timetable' && currentRole === 'student') {
+                initTimetable();
+            }
+        }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            // Populate today's schedule
+            const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const todaySchedule = sampleTimetable[0]; // For demo, always show Monday
+            
+            let scheduleHTML = `<h6 class="mb-3">${todaySchedule.day}</h6>`;
+            todaySchedule.slots.forEach(slot => {
+                scheduleHTML += `
+                    <div class="timetable-slot ${slot.type}">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">${slot.time}</span>
+                            <span class="badge ${slot.type === 'class' ? 'bg-primary' : 'bg-success'}">${slot.type === 'class' ? 'Class' : 'Free'}</span>
+                        </div>
+                        <div>${slot.subject} ${slot.room ? `- ${slot.room}` : ''}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('todaySchedule').innerHTML = scheduleHTML;
+            
+            // Populate suggested activities
+            let activitiesHTML = '';
+            sampleActivities.forEach(activity => {
+                activitiesHTML += `
+                    <div class="activity-card p-3 border-start border-${getPriorityColor(activity.priority)}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">${activity.title}</h6>
+                            <span class="badge bg-${getPriorityColor(activity.priority)}">${activity.priority}</span>
+                        </div>
+                        <div class="text-muted small mt-1">
+                            <i class="fas fa-book me-1"></i> ${activity.subject} 
+                            <i class="fas fa-clock ms-2 me-1"></i> ${activity.duration}
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('suggestedActivities').innerHTML = activitiesHTML;
+            
+            // Populate attendance history
+            let attendanceHTML = '';
+            attendanceData.forEach(record => {
+                attendanceHTML += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${record.course}</td>
+                        <td><span class="badge ${getStatusBadge(record.status)}">${record.status}</span></td>
+                        <td>${record.time}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('attendanceHistory').innerHTML = attendanceHTML;
+            
+            // Initialize attendance chart
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Late', 'Absent'],
+                    datasets: [{
+                        data: [75, 15, 10],
+                        backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b'],
+                        hoverBackgroundColor: ['#17a673', '#dda20a', '#be2617'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Get priority color
+        function getPriorityColor(priority) {
+            switch(priority) {
+                case 'high': return 'danger';
+                case 'medium': return 'warning';
+                case 'low': return 'success';
+                default: return 'secondary';
+            }
+        }
+
+        // Get status badge
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'Present': return 'bg-success';
+                case 'Late': return 'bg-warning';
+                case 'Absent': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Start QR scanner
+        function startQRScanner() {
+            document.getElementById('currentClassInfo').textContent = "CS101 - Introduction to Programming (9:00-10:00 AM)";
+            document.getElementById('attendanceStatus').innerHTML = `
+                <div class="alert alert-success mt-3">
+                    <i class="fas fa-check-circle me-2"></i>Attendance marked successfully at 9:05 AM
+                </div>
+            `;
+        }
+
+        // Switch to Face Recognition tab
+        function switchToFaceRecognition() {
+            document.getElementById('face-tab').click();
+        }
+
+        // Switch to QR Code tab
+        function switchToQRCode() {
+            document.getElementById('qr-tab').click();
+        }
+
+        // Initialize reports section
+        function initReportsSection() {
+            // Populate students table
+            populateStudentsTable(studentsData);
+            
+            // Initialize charts
+            initReportsCharts();
+            
+            // Set up filter handlers
+            setupFilters();
+            
+            // Set up search functionality
+            document.getElementById('searchStudents').addEventListener('input', function(e) {
+                filterStudents(e.target.value);
+            });
+            
+            // Set up attendance threshold slider
+            document.getElementById('attendanceThreshold').addEventListener('input', function(e) {
+                document.getElementById('thresholdValue').textContent = 
+                    `Show students with attendance ≥ ${e.target.value}%`;
+            });
+        }
+
+        // Populate students table
+        function populateStudentsTable(students) {
+            const tableBody = document.getElementById('studentsTableBody');
+            tableBody.innerHTML = '';
+            
+            students.forEach(student => {
+                const statusClass = getStatusClass(student.status);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.course}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress attendance-progress flex-grow-1 me-2">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                    style="width: ${student.attendance}%" 
+                                    aria-valuenow="${student.attendance}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100">
+                                </div>
+                            </div>
+                            <span>${student.attendance}%</span>
+                        </div>
+                    </td>
+                    <td>${student.activities}/12</td>
+                    <td>${student.grade}%</td>
+                    <td><span class="badge badge-attendance ${statusClass}">${student.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary view-report" data-id="${student.id}">
+                            <i class="fas fa-eye me-1"></i>View
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.view-report').forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-id');
+                    viewStudentReport(studentId);
+                });
+            });
+        }
+
+        // Initialize reports charts
+        function initReportsCharts() {
+            // Attendance distribution chart
+            const attendanceCtx = document.getElementById('attendanceDistChart').getContext('2d');
+            new Chart(attendanceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Excellent (90-100%)', 'Good (75-89%)', 'Needs Improvement (60-74%)', 'At Risk (<60%)'],
+                    datasets: [{
+                        data: [35, 45, 15, 5],
+                        backgroundColor: ['#1cc88a', '#4e73df', '#f6c23e', '#e74a3b'],
+                        hoverBackgroundColor: ['#17a673', '#3a5fc8', '#dda20a', '#be2617'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Performance by course chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CS101', 'MATH202', 'PHYS103', 'ENG151'],
+                    datasets: [{
+                        label: 'Average Grade',
+                        data: [82, 76, 85, 72],
+                        backgroundColor: '#4e73df',
+                        borderColor: '#4e73df',
+                        borderWidth: 1
+                    }, {
+                        label: 'Average Attendance',
+                        data: [87, 73, 89, 78],
+                        backgroundColor: '#1cc88a',
+                        borderColor: '#1cc88a',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Set up filter handlers
+        function setupFilters() {
+            // Apply filters button
+            document.getElementById('applyFilters').addEventListener('click', function() {
+                applyFilters();
+            });
+        }
+
+        // Apply filters to student data
+        function applyFilters() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const attendanceThreshold = parseInt(document.getElementById('attendanceThreshold').value);
+            
+            let filteredStudents = studentsData;
+            
+            // Filter by course
+            if (courseFilter !== 'all') {
+                filteredStudents = filteredStudents.filter(student => student.course === courseFilter);
+            }
+            
+            // Filter by attendance threshold
+            filteredStudents = filteredStudents.filter(student => student.attendance >= attendanceThreshold);
+            
+            // Update summary cards
+            updateSummaryCards(filteredStudents);
+            
+            // Repopulate table with filtered students
+            populateStudentsTable(filteredStudents);
+        }
+
+        // Filter students based on search input
+        function filterStudents(searchTerm) {
+            const filteredStudents = studentsData.filter(student => 
+                student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                student.id.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            populateStudentsTable(filteredStudents);
+        }
+
+        // Update summary cards with filtered data
+        function updateSummaryCards(students) {
+            document.getElementById('totalStudents').textContent = students.length;
+            
+            // Calculate average attendance
+            const avgAttendance = students.reduce((sum, student) => sum + student.attendance, 0) / students.length;
+            document.getElementById('avgAttendance').textContent = `${avgAttendance.toFixed(0)}%`;
+            
+            // Count students with low attendance (<75%)
+            const lowAttendanceCount = students.filter(student => student.attendance < 75).length;
+            document.getElementById('lowAttendance').textContent = lowAttendanceCount;
+            
+            // Calculate average activities completed
+            const avgActivities = students.reduce((sum, student) => sum + student.activities, 0) / students.length;
+            document.getElementById('activitiesCompleted').textContent = `${((avgActivities / 12) * 100).toFixed(0)}%`;
+        }
+
+        // Get CSS class for status badge
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Excellent': return 'bg-success';
+                case 'Good': return 'bg-primary';
+                case 'Satisfactory': return 'bg-info';
+                case 'Needs Improvement': return 'bg-warning';
+                case 'Warning': return 'bg-warning';
+                case 'At Risk': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // View detailed student report
+        function viewStudentReport(studentId) {
+            // In a real application, this would navigate to a detailed student report page
+            // For this demo, we'll just show an alert
+            const student = studentsData.find(s => s.id === studentId);
+            alert(`Viewing detailed report for ${student.name} (${studentId})\n\nThis would open a detailed student report page with comprehensive analytics.`);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up default dashboard data
+            document.getElementById('attendancePercent').textContent = '85%';
+            document.getElementById('classesToday').textContent = '4';
+            document.getElementById('freeTime').textContent = '2h';
+            document.getElementById('activitiesCompleted').textContent = '12';
+            
+            // Initialize chart
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Absent', 'Late'],
+                    datasets: [{
+                        data: [85, 10, 5],
+                        backgroundColor: ['#4e73df', '#e74a3b', '#f6c23e']
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Initialize navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

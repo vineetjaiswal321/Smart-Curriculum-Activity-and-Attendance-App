@@ -405,297 +405,491 @@
                             </div>
                         </div>
                     </div>
-<!-- Timetable Section -->
-                    <div class="content-section" id="timetableSection" style="display: none;">
-                        <h4 class="mb-4">Weekly Timetable</h4>
-                        
-                        <div class="timetable-container">
-                            <div class="timetable-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Class Schedule</h5>
-                                <div class="current-date">
-                                    <i class="fas fa-calendar-day me-2"></i>
-                                    <span id="currentDate">Monday, October 16, 2023</span>
+
+                    <!-- Timetable Section -->
+    <!-- Alert Container (initially empty) -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Your existing timetable section code -->
+    <!-- Timetable Section -->
+    <div class="content-section" id="timetableSection" style="display: none;">
+        <h4 class="mb-4">Weekly Timetable</h4>
+        
+        <div class="timetable-container">
+            <div class="timetable-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Class Schedule</h5>
+                <div class="current-date">
+                    <i class="fas fa-calendar-day me-2"></i>
+                    <span id="currentDate">Monday, October 16, 2023</span>
+                </div>
+            </div>
+            
+            <div class="day-selector">
+                <button class="day-btn active" data-day="monday">Monday</button>
+                <button class="day-btn" data-day="tuesday">Tuesday</button>
+                <button class="day-btn" data-day="wednesday">Wednesday</button>
+                <button class="day-btn" data-day="thursday">Thursday</button>
+                <button class="day-btn" data-day="friday">Friday</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="timetable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>9:00 - 10:00</th>
+                            <th>10:00 - 11:00</th>
+                            <th>11:00 - 12:00</th>
+                            <th>12:00 - 1:00</th>
+                            <th>1:00 - 2:00</th>
+                            <th>2:00 - 3:00</th>
+                            <th>3:00 - 4:00</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="time-slot">Monday</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physics</div>
+                                    <div class="subject-details">Dr. Sharma · Room 302</div>
                                 </div>
-                            </div>
-                            
-                            <div class="day-selector">
-                                <button class="day-btn active" data-day="monday">Monday</button>
-                                <button class="day-btn" data-day="tuesday">Tuesday</button>
-                                <button class="day-btn" data-day="wednesday">Wednesday</button>
-                                <button class="day-btn" data-day="thursday">Thursday</button>
-                                <button class="day-btn" data-day="friday">Friday</button>
-                            </div>
-                            
-                            <div class="table-responsive">
-                                <table class="timetable">
-                                    <thead>
-                                        <tr>
-                                            <th>Time</th>
-                                            <th>9:00 - 10:00</th>
-                                            <th>10:00 - 11:00</th>
-                                            <th>11:00 - 12:00</th>
-                                            <th>12:00 - 1:00</th>
-                                            <th>1:00 - 2:00</th>
-                                            <th>2:00 - 3:00</th>
-                                            <th>3:00 - 4:00</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="time-slot">Monday</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physics</div>
-                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Mathematics</div>
-                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card free-period">
-                                                    <div class="subject-name">Free Period</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Computer Science</div>
-                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
-                                                </div>
-                                            </td>
-                                            <td class="time-slot">Lunch</td>
-                                            <td>
-                                                <div class="subject-card substituted">
-                                                    <div class="subject-name">Chemistry</div>
-                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
-                                                    <span class="substitution-badge">Substituted</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">English</div>
-                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="time-slot">Tuesday</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Mathematics</div>
-                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physics</div>
-                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Computer Science</div>
-                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card free-period">
-                                                    <div class="subject-name">Free Period</div>
-                                                </div>
-                                            </td>
-                                            <td class="time-slot">Lunch</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Chemistry</div>
-                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physical Education</div>
-                                                    <div class="subject-details">Mr. Singh · Ground</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="time-slot">Wednesday</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Computer Science</div>
-                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Mathematics</div>
-                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physics</div>
-                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card substituted">
-                                                    <div class="subject-name">English</div>
-                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
-                                                    <span class="substitution-badge">Substituted</span>
-                                                </div>
-                                            </td>
-                                            <td class="time-slot">Lunch</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Chemistry</div>
-                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card free-period">
-                                                    <div class="subject-name">Free Period</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="time-slot">Thursday</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Chemistry</div>
-                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Mathematics</div>
-                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">English</div>
-                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physics</div>
-                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
-                                                </div>
-                                            </td>
-                                            <td class="time-slot">Lunch</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Computer Science</div>
-                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card free-period">
-                                                    <div class="subject-name">Free Period</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="time-slot">Friday</td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">English</div>
-                                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Chemistry</div>
-                                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Mathematics</div>
-                                                    <div class="subject-details">Prof. Kumar · Room 205</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physics</div>
-                                                    <div class="subject-details">Dr. Sharma · Room 302</div>
-                                                </div>
-                                            </td>
-                                            <td class="time-slot">Lunch</td>
-                                            <td>
-                                                <div class="subject-card substituted">
-                                                    <div class="subject-name">Computer Science</div>
-                                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
-                                                    <span class="substitution-badge">Substituted</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="subject-card">
-                                                    <div class="subject-name">Physical Education</div>
-                                                    <div class="subject-details">Mr. Singh · Ground</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Mathematics</div>
+                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card free-period">
+                                    <div class="subject-name">Free Period</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Computer Science</div>
+                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                </div>
+                            </td>
+                            <td class="time-slot">Lunch</td>
+                            <td>
+                                <div class="subject-card substituted">
+                                    <div class="subject-name">Chemistry</div>
+                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                    <span class="substitution-badge">Substituted</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">English</div>
+                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Other days' rows remain the same -->
+                        <tr>
+                            <td class="time-slot">Tuesday</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Mathematics</div>
+                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physics</div>
+                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Computer Science</div>
+                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card free-period">
+                                    <div class="subject-name">Free Period</div>
+                                </div>
+                            </td>
+                            <td class="time-slot">Lunch</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Chemistry</div>
+                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physical Education</div>
+                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-slot">Wednesday</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Computer Science</div>
+                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Mathematics</div>
+                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physics</div>
+                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card substituted">
+                                    <div class="subject-name">English</div>
+                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                    <span class="substitution-badge">Substituted</span>
+                                </div>
+                            </td>
+                            <td class="time-slot">Lunch</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Chemistry</div>
+                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card free-period">
+                                    <div class="subject-name">Free Period</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-slot">Thursday</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Chemistry</div>
+                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Mathematics</div>
+                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">English</div>
+                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physics</div>
+                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                </div>
+                            </td>
+                            <td class="time-slot">Lunch</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Computer Science</div>
+                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card free-period">
+                                    <div class="subject-name">Free Period</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="time-slot">Friday</td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">English</div>
+                                    <div class="subject-details">Ms. Kapoor · Room 110</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Chemistry</div>
+                                    <div class="subject-details">Dr. Gupta · Lab 203</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Mathematics</div>
+                                    <div class="subject-details">Prof. Kumar · Room 205</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physics</div>
+                                    <div class="subject-details">Dr. Sharma · Room 302</div>
+                                </div>
+                            </td>
+                            <td class="time-slot">Lunch</td>
+                            <td>
+                                <div class="subject-card substituted">
+                                    <div class="subject-name">Computer Science</div>
+                                    <div class="subject-details">Dr. VR Mishra · Lab 101</div>
+                                    <span class="substitution-badge">Substituted</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="subject-card">
+                                    <div class="subject-name">Physical Education</div>
+                                    <div class="subject-details">Mr. Singh · Ground</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<!-- Activities Section -->
+<div class="content-section" id="activitiesSection" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0">Student Activities Dashboard</h4>
+            <p class="text-muted mb-0">Manage your academic activities and stay on top of deadlines</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newActivityModal">
+            <i class="fas fa-plus me-2"></i>New Activity
+        </button>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card">
+                <div class="card-body text-center p-3">
+                    <div class="stats-number display-6 fw-bold">5</div>
+                    <div class="stats-text">Total Activities</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Controls and Content -->
+    <div class="row">
+        <!-- Left Column - Activities List -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="search-box mb-4">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" placeholder="Search activities...">
+                    </div>
+                    
+                    <!-- Activity Cards -->
+                    <div class="activity-list">
+                        <!-- Physics Lab Report -->
+                        <div class="activity-card mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Physics Lab Report</h6>
+                                    <p class="text-muted small mb-1">PHYS103 - Physics for Engineers</p>
+                                    <p class="small mb-2">Complete lab report on pendulum motion analysis with data collection and error analysis.</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2">Progress: 100%</span>
+                                        <span class="text-danger small">603 days overdue • 1/22/2024</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">View</button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- More sections would be implemented here -->
-                    <div class="content-section" id="qrGeneratorSection" style="display: none;">
-                        <h4 class="mb-4">QR Code Generator</h4>
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">Generate QR for Class</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Select Course</label>
-                                            <select class="form-select" id="courseSelect">
-                                                <option value="">-- Select Course --</option>
-                                                <option value="CS101">CS101 - Introduction to Programming</option>
-                                                <option value="MATH202">MATH202 - Calculus II</option>
-                                                <option value="PHYS103">PHYS103 - Physics for Engineers</option>
-                                                <option value="ENG151">ENG151 - English Composition</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Duration (minutes)</label>
-                                            <input type="number" class="form-control" id="qrDuration" value="15" min="5" max="60">
-                                        </div>
-                                        <button class="btn btn-primary" onclick="generateQRCode()">
-                                            <i class="fas fa-qrcode me-2"></i>Generate QR Code
-                                        </button>
+                        
+                        <!-- Programming Assignment 3 -->
+                        <div class="activity-card mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="mb-1">Programming Assignment 3</h6>
+                                        <span class="badge bg-danger ms-2">High Priority</span>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="qr-container">
-                                            <h5>QR Code</h5>
-                                            <div id="qrcode"></div>
-                                            <p class="mt-3" id="qrInfo">No QR code generated yet</p>
-                                            <div class="alert alert-warning mt-3">
-                                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                                This QR code will expire in <span id="qrTimeRemaining">0:00</span> minutes
-                                            </div>
-                                        </div>
+                                    <p class="text-muted small mb-1">CS101 - Introduction to Programming</p>
+                                    <p class="small mb-2">Implement a sorting algorithm using Python. The assignment requires implementing quicksort and mergesort algorithms with performance analysis.</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2">Progress: 100%</span>
+                                        <span class="text-danger small">600 days overdue • 1/25/2024</span>
                                     </div>
                                 </div>
+                                <div class="d-flex flex-column">
+                                    <button class="btn btn-sm btn-outline-primary mb-1">Submit</button>
+                                    <button class="btn btn-sm btn-outline-secondary">View</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chemistry Quiz 3 -->
+                        <div class="activity-card mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Chemistry Quiz 3</h6>
+                                    <p class="text-muted small mb-1">CHEM121 - General Chemistry</p>
+                                    <p class="small mb-2">Online quiz covering chemical bonding, molecular geometry, and intermolecular forces.</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2">Progress: 100%</span>
+                                        <span class="text-danger small">599 days overdue • 1/26/2024</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">View</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Essay: Climate Change -->
+                        <div class="activity-card mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Essay: Climate Change</h6>
+                                    <p class="text-muted small mb-1">ENG151 - English Composition</p>
+                                    <p class="small mb-2">Write a 1500-word argumentative essay on climate change impacts and solutions.</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2">Progress: 100%</span>
+                                        <span class="text-danger small">596 days overdue • 1/30/2024</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">Submit</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Calculus Problem Set 5 -->
+                        <div class="activity-card mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Calculus Problem Set 5</h6>
+                                    <p class="text-muted small mb-1">MATH202 - Calculus II</p>
+                                    <p class="small mb-2">Solve integration problems using various techniques including integration by parts and substitution.</p>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2">Progress: 100%</span>
+                                        <span class="text-danger small">597 days overdue • 1/28/2024</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">Submit</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Right Column - Stats and Actions -->
+        <div class="col-lg-4">
+            <!-- Status Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">All Status</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">All</span>
+                        <span class="badge bg-primary">Pending</span>
+                        <span class="badge bg-success">Submitted</span>
+                        <span class="badge bg-info">Graded</span>
+                        <span class="badge bg-danger">Overdue</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Due Date Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Due Date</h6>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="overdueCheck" checked>
+                        <label class="form-check-label" for="overdueCheck">
+                            Overdue (3)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="thisWeekCheck">
+                        <label class="form-check-label" for="thisWeekCheck">
+                            This Week (0)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="nextWeekCheck">
+                        <label class="form-check-label" for="nextWeekCheck">
+                            Next Week (0)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="futureCheck">
+                        <label class="form-check-label" for="futureCheck">
+                            Future (0)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Deadlines -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Upcoming Deadlines</h6>
+                    <p class="text-muted mb-0">No upcoming deadlines</p>
+                    <p class="text-success small">You're all caught up!</p>
+                </div>
+            </div>
+            
+            <!-- Progress Overview -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Progress Overview</h6>
+                    <div class="text-center mb-3">
+                        <div class="display-6 fw-bold">40%</div>
+                        <div class="text-muted small">Completion Rate</div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Pending</span>
+                        <span>Submitted</span>
+                        <span>Graded</span>
+                        <span>Overdue</span>
+                    </div>
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: 20%"></div>
+                        <div class="progress-bar bg-info" style="width: 30%"></div>
+                        <div class="progress-bar bg-success" style="width: 40%"></div>
+                        <div class="progress-bar bg-danger" style="width: 10%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="text-center">
+                            <div class="fw-bold">2</div>
+                            <div class="text-muted small">Completed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="fw-bold">3</div>
+                            <div class="text-muted small">Remaining</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Quick Actions</h6>
+                    <button class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-plus me-2"></i>Add New Activity
+                    </button>
+                    <button class="btn btn-outline-success w-100 mb-2">
+                        <i class="fas fa-check-double me-2"></i>Mark All as Complete
+                    </button>
+                    <button class="btn btn-outline-info w-100">
+                        <i class="fas fa-calendar me-2"></i>View Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>

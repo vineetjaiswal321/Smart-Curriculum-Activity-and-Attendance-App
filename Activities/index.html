@@ -1,0 +1,98 @@
+<!-- Add this with the other content sections -->
+<div class="content-section" id="activitiesSection" style="display: none;">
+    <h4 class="mb-4">My Activities</h4>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" id="activitySearch" class="form-control" placeholder="Search activities...">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-end">
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-filter me-2"></i>Filter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li><a class="dropdown-item filter-option" href="#" data-filter="all">All Activities</a></li>
+                        <li><a class="dropdown-item filter-option" href="#" data-filter="pending">Pending</a></li>
+                        <li><a class="dropdown-item filter-option" href="#" data-filter="submitted">Submitted</a></li>
+                        <li><a class="dropdown-item filter-option" href="#" data-filter="graded">Graded</a></li>
+                        <li><a class="dropdown-item filter-option" href="#" data-filter="overdue">Overdue</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sort me-2"></i>Sort
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                        <li><a class="dropdown-item sort-option" href="#" data-sort="dueDate">Due Date</a></li>
+                        <li><a class="dropdown-item sort-option" href="#" data-sort="course">Course</a></li>
+                        <li><a class="dropdown-item sort-option" href="#" data-sort="priority">Priority</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="activities-list" id="activitiesList">
+                <!-- Activities will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Upcoming Deadlines</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush" id="upcomingDeadlines">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Activity Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="activity-stats">
+                        <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <i class="fas fa-tasks text-primary me-2"></i>
+                                <span>Total Activities</span>
+                            </div>
+                            <span class="badge bg-primary" id="totalActivities">0</span>
+                        </div>
+                        <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <span>Pending</span>
+                            </div>
+                            <span class="badge bg-warning" id="pendingActivities">0</span>
+                        </div>
+                        <div class="stat-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>Completed</span>
+                            </div>
+                            <span class="badge bg-success" id="completedActivities">0</span>
+                        </div>
+                        <div class="stat-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                                <span>Overdue</span>
+                            </div>
+                            <span class="badge bg-danger" id="overdueActivities">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

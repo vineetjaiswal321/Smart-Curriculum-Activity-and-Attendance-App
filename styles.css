@@ -244,3 +244,325 @@ body {
         min-height: auto;
     }
 }
+
+/* New timetable styles from the first code */
+        .timetable-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .timetable-header {
+            background: linear-gradient(180deg, var(--light) 0%, #e3e6f0 100%);
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 600;
+            padding: 1rem 1.35rem;
+        }
+        
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            background-color: white;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .day-btn {
+            flex: 1;
+            min-width: 120px;
+            border: none;
+            padding: 0.75rem;
+            margin: 0 0.25rem;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .day-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .day-btn:hover:not(.active) {
+            background: #e3e6f0;
+        }
+        
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .timetable th {
+            background-color: #f8f9fc;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .timetable td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e3e6f0;
+            vertical-align: top;
+            height: 100px;
+        }
+        
+        .time-slot {
+            font-weight: 600;
+            background-color: #f8f9fc;
+        }
+        
+        .subject-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0.75rem;
+            box-shadow: 0 0.15rem 0.5rem rgba(58, 59, 69, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .subject-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subject-details {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        .free-period {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .substituted {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--warning);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .substitution-badge {
+            background-color: var(--warning);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        
+        .alert-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 350px;
+        }
+        
+        .current-time-indicator {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .timetable th, .timetable td {
+                padding: 0.5rem;
+            }
+            
+            .subject-card {
+                padding: 0.5rem;
+            }
+            
+            .subject-name {
+                font-size: 0.9rem;
+            }
+            
+            .subject-details {
+                font-size: 0.75rem;
+            }
+            
+            .alert-container {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+            }
+        }
+ /* Activities Section Styles */
+.activity-card {
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.activity-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box .fas.fa-search {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-box .form-control {
+    padding-left: 35px;
+}
+
+.stat-card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card .stats-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #3b7ddd;
+}
+
+.stat-card .stats-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Progress bar styles */
+.progress {
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+.progress-bar {
+    border-radius: 4px;
+}
+
+
+/* Reports Section Styles */
+.filter-section {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+}
+
+.student-card {
+    border-left: 4px solid var(--primary);
+    transition: transform 0.3s;
+}
+
+.student-card:hover {
+    transform: translateY(-5px);
+}
+
+.attendance-progress {
+    height: 8px;
+}
+
+.report-table th {
+    background-color: #f8f9fc;
+    font-weight: 600;
+}
+
+.badge-attendance {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.65rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #3a5fc8;
+    border-color: #3a5cfa;
+}
+
+.content-section {
+    display: none;
+}
+
+/* Color variables */
+:root {
+    --primary: #4e73df;
+    --secondary: #6f42c1;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #5a5c69;
+}
+
+/* Stats cards */
+.stats-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stats-text {
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.card-header {
+    background: linear-gradient(180deg, var(--light) 0%, #e3e6f0 100%);
+    border-bottom: 1px solid #e3e6f0;
+    font-weight: 600;
+    padding: 1rem 1.35rem;
+}

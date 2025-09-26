@@ -65,7 +65,8 @@ function login(role) {
     });
     
     if (role === 'teacher') {
-        window.location.href = "TeacherDashBoard/index.html";
+        window.location.href = "TeacherDashBoard/teachers.html";
+        return; // Exit early to prevent further execution
     }
 
     if (role === 'teacher' || role === 'admin') {
@@ -75,6 +76,8 @@ function login(role) {
     }
     
     if (role === 'admin') {
+        window.location.href = "admin.html";
+        return; // Exit early to prevent further execution
         document.querySelectorAll('.admin-only').forEach(el => {
             el.style.display = 'block';
         });
@@ -99,6 +102,9 @@ function logout() {
     if (faceVideo.srcObject) {
         faceVideo.srcObject.getTracks().forEach(track => track.stop());
     }
+    
+    // Clear any substitution alerts
+    clearTimeout(substitutionAlertTimeout);
 }
 
 // Capitalize first letter
@@ -118,6 +124,11 @@ function showSection(section) {
         link.classList.remove('active');
     });
     document.querySelector(`.nav-link[data-section="${section}"]`).classList.add('active');
+    
+    // If showing timetable and user is student, initialize it
+    if (section === 'timetable' && currentRole === 'student') {
+        initTimetable();
+    }
 }
 
 // Switch to Face Recognition tab
@@ -417,11 +428,475 @@ function generateQRCode() {
     }, 60000);
 }
 
-// Initialize navigation
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const section = this.getAttribute('data-section');
-        showSection(section);
+// Global variable to track substitution alert timeout
+let substitutionAlertTimeout = null;
+
+// Initialize timetable section
+function initTimetable() {
+    // Set current date
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const currentDate = new Date().toLocaleDateString('en-US', options);
+    document.getElementById('currentDate').textContent = currentDate;
+    
+    // Day selector functionality
+    const dayButtons = document.querySelectorAll('.day-btn');
+    const timetableRows = document.querySelectorAll('.timetable tbody tr');
+    
+    dayButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            
+            // Update active button
+            dayButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding row in timetable
+            timetableRows.forEach(row => {
+                if (row.cells[0].textContent.toLowerCase() === day) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     });
+    
+    // Show Monday by default
+    document.querySelector('.day-btn[data-day="monday"]').click();
+    
+    // Highlight current time slot
+    function highlightCurrentTime() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const totalMinutes = currentHour * 60 + currentMinutes;
+        
+        // Define time slots (in minutes)
+        const timeSlots = [
+            { start: 9*60, end: 10*60 },
+            { start: 10*60, end: 11*60 },
+            { start: 11*60, end: 12*60 },
+            { start: 12*60, end: 13*60 },
+            { start: 13*60, end: 14*60 },
+            { start: 14*60, end: 15*60 },
+            { start: 15*60, end: 16*60 }
+        ];
+        
+        // Find current time slot
+        let currentSlotIndex = -1;
+        for (let i = 0; i < timeSlots.length; i++) {
+            if (totalMinutes >= timeSlots[i].start && totalMinutes < timeSlots[i].end) {
+                currentSlotIndex = i;
+                break;
+            }
+        }
+        
+        // Remove previous highlights
+        document.querySelectorAll('.current-time').forEach(el => {
+            el.classList.remove('current-time');
+        });
+        
+        // Remove previous current time indicators
+        document.querySelectorAll('.current-time-indicator').forEach(el => {
+            el.remove();
+        });
+        
+        // Add highlight to current time slot
+        if (currentSlotIndex >= 0) {
+            const rows = document.querySelectorAll('.timetable tbody tr');
+            rows.forEach(row => {
+                const cell = row.cells[currentSlotIndex + 1]; // +1 to skip day cell
+                if (cell) {
+                    cell.classList.add('current-time');
+                    const subjectCard = cell.querySelector('.subject-card');
+                    if (subjectCard) {
+                        subjectCard.innerHTML += '<div class="current-time-indicator">Current Class</div>';
+                    }
+                }
+            });
+        }
+    }
+    
+    // Initial highlight and set interval to update
+    highlightCurrentTime();
+    setInterval(highlightCurrentTime, 60000); // Update every minute
+    
+    // Simulate real-time notifications for substitutions - ONLY if we're in the timetable section
+    function simulateSubstitutionAlert() {
+        // Check if we're in the timetable section and user is a student
+        if (document.getElementById('timetableSection').style.display !== 'block' || currentRole !== 'student') {
+            return;
+        }
+        
+        const alertContainer = document.querySelector('.alert-container');
+        if (!alertContainer) return;
+        
+        // Create new alert
+        const newAlert = document.createElement('div');
+        newAlert.className = 'alert alert-warning alert-dismissible fade show';
+        newAlert.innerHTML = `
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-bell fa-2x"></i>
+                </div>
+                <div>
+                    <h5 class="alert-heading">New Substitution</h5>
+                    <p class="mb-1">Your Computer Science class tomorrow has been substituted.</p>
+                    <small>Just now</small>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Add to container
+        alertContainer.prepend(newAlert);
+    }
+    
+    // Clear any existing timeout
+    if (substitutionAlertTimeout) {
+        clearTimeout(substitutionAlertTimeout);
+    }
+    
+    // Set new timeout only if we're in the student timetable section
+    if (currentRole === 'student') {
+        substitutionAlertTimeout = setTimeout(simulateSubstitutionAlert, 10000);
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up default dashboard data
+    document.getElementById('attendancePercent').textContent = '85%';
+    document.getElementById('classesToday').textContent = '4';
+    document.getElementById('freeTime').textContent = '2h';
+    document.getElementById('activitiesCompleted').textContent = '12';
+    
+    // Initialize chart
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Present', 'Absent', 'Late'],
+            datasets: [{
+                data: [85, 10, 5],
+                backgroundColor: ['#4e73df', '#e74a3b', '#f6c23e']
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    
+    // Initialize navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.getAttribute('data-section');
+            showSection(section);
+        });
+    });
+});
+
+// Activities Section Functionality
+function initActivitiesSection() {
+    // Filter activities by status
+    document.querySelectorAll('.filter-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const filter = this.getAttribute('data-filter');
+            filterActivities(filter);
+        });
+    });
+    
+    // Sort activities
+    document.querySelectorAll('.sort-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sortBy = this.getAttribute('data-sort');
+            sortActivities(sortBy);
+        });
+    });
+    
+    // Initialize activities
+    updateActivityStats();
+}
+
+function filterActivities(filter) {
+    const activities = document.querySelectorAll('.activity-card');
+    
+    activities.forEach(activity => {
+        if (filter === 'all') {
+            activity.style.display = 'block';
+        } else {
+            // This is a simplified filter - you would need to add data attributes to your activities
+            // For a real implementation, you would check the actual status of each activity
+            activity.style.display = 'block';
+        }
+    });
+}
+
+function sortActivities(sortBy) {
+    // This would implement sorting logic based on the selected criteria
+    console.log('Sorting activities by:', sortBy);
+}
+
+function updateActivityStats() {
+    // Update statistics based on current activities
+    const totalActivities = document.querySelectorAll('.activity-card').length;
+    document.getElementById('totalActivities').textContent = totalActivities;
+    
+    // You would calculate these values based on actual activity data
+    document.getElementById('pendingActivities').textContent = '3';
+    document.getElementById('completedActivities').textContent = '2';
+    document.getElementById('overdueActivities').textContent = '3';
+}
+
+// Initialize activities when the section is shown
+document.addEventListener('DOMContentLoaded', function() {
+    const activitiesSection = document.getElementById('activitiesSection');
+    
+    // Initialize when activities section is shown
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                if (activitiesSection.style.display !== 'none') {
+                    initActivitiesSection();
+                }
+            }
+        });
+    });
+    
+    observer.observe(activitiesSection, { attributes: true });
+});
+
+
+// Dummy student data for reports
+const studentsData = [
+    { id: 'S001', name: 'Akhilesh Kumar', course: 'CS101', attendance: 92, activities: 12, grade: 85, status: 'Good' },
+    { id: 'S002', name: 'Priya Sharma', course: 'CS101', attendance: 88, activities: 10, grade: 78, status: 'Good' },
+    { id: 'S003', name: 'Rahul Verma', course: 'MATH202', attendance: 65, activities: 8, grade: 72, status: 'Warning' },
+    { id: 'S004', name: 'Sneha Patel', course: 'PHYS103', attendance: 95, activities: 11, grade: 88, status: 'Excellent' },
+    { id: 'S005', name: 'Vikram Singh', course: 'ENG151', attendance: 72, activities: 9, grade: 68, status: 'Needs Improvement' },
+    { id: 'S006', name: 'Anjali Gupta', course: 'CS101', attendance: 90, activities: 12, grade: 82, status: 'Good' },
+    { id: 'S007', name: 'Mohit Agarwal', course: 'MATH202', attendance: 58, activities: 7, grade: 65, status: 'At Risk' },
+    { id: 'S008', name: 'Neha Reddy', course: 'PHYS103', attendance: 96, activities: 12, grade: 91, status: 'Excellent' },
+    { id: 'S009', name: 'Karan Malhotra', course: 'ENG151', attendance: 84, activities: 10, grade: 76, status: 'Good' },
+    { id: 'S010', name: 'Divya Joshi', course: 'CS101', attendance: 79, activities: 9, grade: 74, status: 'Satisfactory' }
+];
+
+// Initialize reports section
+function initReportsSection() {
+    // Populate students table
+    populateStudentsTable(studentsData);
+    
+    // Initialize charts
+    initReportsCharts();
+    
+    // Set up filter handlers
+    setupFilters();
+    
+    // Set up search functionality
+    document.getElementById('searchStudents').addEventListener('input', function(e) {
+        filterStudents(e.target.value);
+    });
+    
+    // Set up attendance threshold slider
+    document.getElementById('attendanceThreshold').addEventListener('input', function(e) {
+        document.getElementById('thresholdValue').textContent = 
+            `Show students with attendance ≥ ${e.target.value}%`;
+    });
+}
+
+// Populate students table
+function populateStudentsTable(students) {
+    const tableBody = document.getElementById('studentsTableBody');
+    tableBody.innerHTML = '';
+    
+    students.forEach(student => {
+        const statusClass = getStatusClass(student.status);
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>${student.course}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="progress attendance-progress flex-grow-1 me-2">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                            style="width: ${student.attendance}%" 
+                            aria-valuenow="${student.attendance}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                        </div>
+                    </div>
+                    <span>${student.attendance}%</span>
+                </div>
+            </td>
+            <td>${student.activities}/12</td>
+            <td>${student.grade}%</td>
+            <td><span class="badge badge-attendance ${statusClass}">${student.status}</span></td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary view-report" data-id="${student.id}">
+                    <i class="fas fa-eye me-1"></i>View
+                </button>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Add event listeners to view buttons
+    document.querySelectorAll('.view-report').forEach(button => {
+        button.addEventListener('click', function() {
+            const studentId = this.getAttribute('data-id');
+            viewStudentReport(studentId);
+        });
+    });
+}
+
+// Initialize reports charts
+function initReportsCharts() {
+    // Attendance distribution chart
+    const attendanceCtx = document.getElementById('attendanceDistChart').getContext('2d');
+    new Chart(attendanceCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Excellent (90-100%)', 'Good (75-89%)', 'Needs Improvement (60-74%)', 'At Risk (<60%)'],
+            datasets: [{
+                data: [35, 45, 15, 5],
+                backgroundColor: ['#1cc88a', '#4e73df', '#f6c23e', '#e74a3b'],
+                hoverBackgroundColor: ['#17a673', '#3a5fc8', '#dda20a', '#be2617'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    
+    // Performance by course chart
+    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(performanceCtx, {
+        type: 'bar',
+        data: {
+            labels: ['CS101', 'MATH202', 'PHYS103', 'ENG151'],
+            datasets: [{
+                label: 'Average Grade',
+                data: [82, 76, 85, 72],
+                backgroundColor: '#4e73df',
+                borderColor: '#4e73df',
+                borderWidth: 1
+            }, {
+                label: 'Average Attendance',
+                data: [87, 73, 89, 78],
+                backgroundColor: '#1cc88a',
+                borderColor: '#1cc88a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 60,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+// Set up filter handlers
+function setupFilters() {
+    // Apply filters button
+    document.getElementById('applyFilters').addEventListener('click', function() {
+        applyFilters();
+    });
+}
+
+// Apply filters to student data
+function applyFilters() {
+    const courseFilter = document.getElementById('courseFilter').value;
+    const attendanceThreshold = parseInt(document.getElementById('attendanceThreshold').value);
+    
+    let filteredStudents = studentsData;
+    
+    // Filter by course
+    if (courseFilter !== 'all') {
+        filteredStudents = filteredStudents.filter(student => student.course === courseFilter);
+    }
+    
+    // Filter by attendance threshold
+    filteredStudents = filteredStudents.filter(student => student.attendance >= attendanceThreshold);
+    
+    // Update summary cards
+    updateSummaryCards(filteredStudents);
+    
+    // Repopulate table with filtered students
+    populateStudentsTable(filteredStudents);
+}
+
+// Filter students based on search input
+function filterStudents(searchTerm) {
+    const filteredStudents = studentsData.filter(student => 
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        student.id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    populateStudentsTable(filteredStudents);
+}
+
+// Update summary cards with filtered data
+function updateSummaryCards(students) {
+    document.getElementById('totalStudents').textContent = students.length;
+    
+    // Calculate average attendance
+    const avgAttendance = students.reduce((sum, student) => sum + student.attendance, 0) / students.length;
+    document.getElementById('avgAttendance').textContent = `${avgAttendance.toFixed(0)}%`;
+    
+    // Count students with low attendance (<75%)
+    const lowAttendanceCount = students.filter(student => student.attendance < 75).length;
+    document.getElementById('lowAttendance').textContent = lowAttendanceCount;
+    
+    // Calculate average activities completed
+    const avgActivities = students.reduce((sum, student) => sum + student.activities, 0) / students.length;
+    document.getElementById('activitiesCompleted').textContent = `${((avgActivities / 12) * 100).toFixed(0)}%`;
+}
+
+// Get CSS class for status badge
+function getStatusClass(status) {
+    switch(status) {
+        case 'Excellent': return 'bg-success';
+        case 'Good': return 'bg-primary';
+        case 'Satisfactory': return 'bg-info';
+        case 'Needs Improvement': return 'bg-warning';
+        case 'Warning': return 'bg-warning';
+        case 'At Risk': return 'bg-danger';
+        default: return 'bg-secondary';
+    }
+}
+
+// View detailed student report
+function viewStudentReport(studentId) {
+    // In a real application, this would navigate to a detailed student report page
+    // For this demo, we'll just show an alert
+    const student = studentsData.find(s => s.id === studentId);
+    alert(`Viewing detailed report for ${student.name} (${studentId})\n\nThis would open a detailed student report page with comprehensive analytics.`);
+}
+
+// Initialize the reports section when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initReportsSection();
 });
